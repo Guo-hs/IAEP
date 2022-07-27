@@ -193,8 +193,8 @@ def AES_Decrypt(data,key):
 
 
 def PGP_Encrypt(M,ks):
-    C1 = AES_Encrypt(M,ks)
     C2,C3,C4 = sm2_encrypt(ks) 
+    C1 = AES_Encrypt(M,ks)
     return C1,C2,C3,C4
 
 def PGP_Decrypt(C1, C2,C3,C4):
