@@ -1,4 +1,4 @@
-# Project1: implement the naïve birthday attack of reduced SM3
+# Project2: implement the Rho method of reduced SM3
 ## 谢东辰 202000460131（一人完成）
 ## 代码说明/实验步骤
 ### 1.随机取一个数i作为初始值
