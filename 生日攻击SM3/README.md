@@ -1,5 +1,5 @@
 
-# 生日攻击SM3
+# Project1: implement the naïve birthday attack of reduced SM3
 ## 谢东辰 202000460131（一人完成）
 ## 代码说明/实验步骤：
 ### 1.假定要查找前nbit的碰撞
