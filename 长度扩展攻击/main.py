@@ -185,7 +185,7 @@ mlen = len(m)
 print("消息长度： ",mlen)
 Hash = sm3.sm3_hash(func.bytes_to_list(bytes(m, encoding='utf-8')))
 print("消息的哈希值： ",Hash)
-append_m = "1901210403"
+append_m = "20220728"
 print("附加消息:", append_m)
 pad_str = ""
 pad = []
