@@ -1,3 +1,4 @@
+# 客户端
 import socket
 import sys
 from random import randint
@@ -192,7 +193,7 @@ else:
     s_client.sendto(y.encode('utf-8'),address)
     s_client.sendto(e.encode('utf-8'),address)
 
-    # 接收客户端发送的r,s2,s3
+    # 接收服务端发送的r,s2,s3
     r,address=s_client.recvfrom(1024)
     r=int(r.decode(),16)
     s2,address=s_client.recvfrom(1024)
