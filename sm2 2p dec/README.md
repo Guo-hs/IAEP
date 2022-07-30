@@ -1,4 +1,4 @@
-# Project12: implement sm2 2P sign with real network communication
+# Project12: implement sm2 2P decrypt with real network communication
 ## 谢东辰 202000460131（一人完成）
 ## 代码说明/实验步骤
 ### 1.利用python设计基于UDP协议的客户端和服务端，保证顺利连接
