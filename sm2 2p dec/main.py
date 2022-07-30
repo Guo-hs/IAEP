@@ -1,10 +1,12 @@
 import socket
-
+import sys
+import math
 from random import randint
 from gmpy2 import invert
-import math
+import binascii
 
-# -------------------------------------以下是SM2算法的内容---------------------
+# -------------------------------------以下是SM2算法的内容---------------------------------------------------
+
 def modinv(a,m):
     x1,x2,x3=1,0,a
     y1,y2,y3=0,1,m
@@ -58,6 +60,8 @@ def grouping(m):
 
 def extend(bi):
     w=[]
+    global h
+    h+=1
     for i in range(16):
         w.append(int(bi[i*8:(i+1)*8],16))
     for j in range(16,68):
@@ -65,8 +69,7 @@ def extend(bi):
     for j in range(68,132):
         w.append(w[j-68]^w[j-64])
         154996
-    global h
-    if (h==0):
+    if (h==1):
         print(hex(0xEE0C62D1DC3140C2DE4532F668AFA2D97A63228BB59A0094A960A39BAC470B24A4677D10E))
     return w
 
@@ -173,7 +176,7 @@ def decrypt(c1,c2,c3,a,b,p):
         return False
     return hex(int(m,2))[2:]
 
-
+h=0
 p=0x8542D69E4C044F18E8B92435BF6FF7DE457283915C45517D722EDB8B08F1DFC3
 a=0x787968B4FA32C3FD2417842E73BBFEFF2F3C848B6831D7E0EC65228B3937E498
 b=0x63E4C6D3B23B0C849CF84241484BFE48F61D59A5B16BA06E6E12D1DA27C5249A
@@ -186,19 +189,45 @@ G=(Gx,Gy)  # 用元组表示点的坐标
 # --------------------------------------------------以上为SM2算法的内容---------------------------------------------------
 
 
-host = ''
-
+host = '127.0.0.1'
 port=5200  # 任意设计端口号
-address = (host, port)
+address=(host,port)
 s_client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-s_client.bind(address)
-d2 = randint(1,n)
-x, address = s_client.recvfrom(1024)
-x = int(x.decode(), 16)
-y, address = s_client.recvfrom(1024)
-y = int(y.decode(), 16)
-T1 = (x, y)
-T2 = mul(T1, invert(d2, p))
-x, y = hex(T2[0]), hex(T2[1])
-s_client.sendto(x.encode('utf-8'), address)
-s_client.sendto(y.encode('utf-8'), address)
+
+try:
+    s_client.connect(address)
+    print("连接成功！")
+
+except Exception:
+    print('连接失败！')
+    sys.exit()
+
+# ------------连接完毕-------------
+else:
+    M="202000460131"  # 任取信息M
+    d1=randint(1,n)  # 任取一个d1
+    C1,C2,C3=encrypt(M,d1)  # 利用d1得到C
+    T1 = mul(C1, invert(d1, p))  # 计算T1
+
+    # 将T1发送给服务端
+    x, y = hex(T1[0]), hex(T1[1])
+    s_client.sendto(x.encode('utf-8'), address)
+    s_client.sendto(y.encode('utf-8'), address)
+
+    # 接收T2
+    x1, address = s_client.recvfrom(1024)
+    x1 = int(x1.decode(), 16)
+    y1, address = s_client.recvfrom(1024)
+    y1 = int(y1.decode(), 16)
+    T2 = (x1, y1)
+    # 计算x2,y2
+    x2, y2 = add(T2[0], T2[1], C1[0], -C1[1])
+    x2, y2 = '{:0256b}'.format(x2), '{:0256b}'.format(y2)
+    # 计算t
+    klen=len(C2)*4
+    t = KDF(x2 + y2, klen)
+    M2 = '0' * (klen - len(bin(int(C2, 16) ^ int(t, 2))[2:])) + bin(int(C2, 16) ^ int(t, 2))[2:]
+    u = hash(hex(int(x2 + M2 + y2, 2))[2:])
+    if (u == C3):
+        print(hex(int(M2)).upper()[2:])
+    s_client.close()
