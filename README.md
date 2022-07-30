@@ -13,3 +13,4 @@
 #### 8.简介：PGP 名称：Implement a PGP scheme with SM2 负责人：郭昊杉
 #### 9.简介：report_on_MPT 名称：research report on MPT 负责人：郭昊杉
 #### 10.简介：meow_hash_1 名称：Find a key with hash value “sdu_cst_20220610” under a message composed of your name followed by your student ID. For example, “San Zhan 202000460001”. 负责人：郭昊杉
+#### 11.简介：meow_hash_2 名称：Find a 64-byte message under some k fulfilling that their hash value is symmetrical. 负责人：郭昊杉
